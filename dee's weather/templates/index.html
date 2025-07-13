@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    home page
+{% endblock %}
+
+{% block main %}
+
+
+    <form action="/" method="post">
+
+        <!-- country dropdown -->
+        <div class="form-floating mb-3">
+
+            <select autocomplete="off" class="form-floating mb-3 form-select" id="country" name="country" required>
+                <option selected disabled>Select Country</option>
+                <option value="MM">Myanmar</option>
+                <option value="TH">Thailand</option>
+                <option value="US">United States of America</option>
+            </select>
+            <label for="country">Choose Country</label>
+        </div>
+
+        <!-- city dropdown -->
+      <div class="form-floating mb-3">
+            <select class="form-floating mb-3 form-select" id="city" name="city" required>
+                <option value='' selected disabled> First select a country</option>
+            </select>
+            <label for="city">Choose City</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Get Weather Forecast</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const countrySelect = document.querySelector('#country');
+            const citySelect = document.querySelector('#city'); // select dropdwon
+
+            const cities = {
+                'MM' : [
+                        'Yangon', 'Mandalay', 'Naypyidaw',
+                        'Mawlamyine', 'Bago', 'Pathein', 'Monywa', 'Meiktila',
+                        'Taunggyi', 'Sittwe', 'Myitkyina', 'Lashio', 'Dawei',
+                        'Bagan', 'Kalaw', 'Nyaungshwe', 'Hsipaw', 'Pyin Oo Lwin',
+                        'Kyaiktiyo', 'Hpa-An', 'Loikaw', 'Magway', 'Pyay',
+                        'Ngapali', 'Chaungtha', 'Myeik', 'Kawthaung',
+                        'Sagaing', 'Amarapura', 'Mingun', 'Innwa', 'Pakokku',
+                        'Shwebo', 'Mogok', 'Kyaukse', 'Thazi', 'Aungban'
+                    ],
+              'TH': [
+
+                        'Bangkok', 'Chiang Mai', 'Chiang Rai', 'Phuket', 'Pattaya',
+                        'Hat Yai', 'Nakhon Ratchasima', 'Khon Kaen', 'Udon Thani', 'Ubon Ratchathani',
+                        'Nakhon Si Thammarat', 'Songkhla', 'Surat Thani', 'Nakhon Pathom', 'Rayong',
+                        'Krabi', 'Hua Hin', 'Kanchanaburi', 'Ayutthaya', 'Sukhothai',
+                        'Pai', 'Mae Hong Son', 'Koh Samui', 'Koh Phi Phi', 'Koh Chang',
+                        'Cha-am', 'Bang Saen', 'Jomtien', 'Ao Nang', 'Railay',
+                        'Koh Lanta', 'Koh Tao', 'Koh Phangan',
+                        'Lopburi', 'Phitsanulok', 'Kamphaeng Phet', 'Si Satchanalai',
+                        'Lampang', 'Phrae', 'Nan', 'Mae Sai', 'Chiang Saen',
+                        'Trat', 'Chanthaburi', 'Sa Kaeo',
+                        'Yala', 'Pattani', 'Narathiwat', 'Satun', 'Ranong'
+                    ],
+              'US': [
+
+                        'Fremont', 'Hayward', 'Milpitas', 'Newark', 'Oakland', 'Palo Alto', 'Sacramento', 'San Francisco', 'San Jose', 'Stockton', 'Union City',
+
+
+                        'Amarillo', 'Anaheim', 'Anchorage', 'Arlington', 'Aspen',
+                        'Atlanta', 'Austin', 'Bakersfield', 'Baltimore', 'Bar Harbor',
+                        'Boston', 'Cape Coral', 'Charleston', 'Charlotte', 'Chicago',
+                        'Cincinnati', 'Cleveland', 'Colorado Springs', 'Columbus', 'Corpus Christi',
+                        'Dallas', 'Denver', 'Detroit', 'El Paso', 'Fort Lauderdale',
+                        'Fort Worth', 'Fresno', 'Frisco', 'Garland', 'Hialeah',
+                        'Honolulu', 'Houston', 'Indianapolis', 'Irvine', 'Irving',
+                        'Jacksonville', 'Kansas City', 'Key West', 'Laredo', 'Las Vegas',
+                        'Long Beach', 'Los Angeles', 'Louisville', 'Lubbock', 'Martha\'s Vineyard',
+                        'McKinney', 'Memphis', 'Miami', 'Miami Beach', 'Milwaukee',
+                        'Minneapolis', 'Nantucket', 'Napa', 'Nashville', 'New Orleans',
+                        'New York', 'Orlando', 'Park City', 'Philadelphia', 'Phoenix',
+                        'Pittsburgh', 'Plano', 'Port St. Lucie', 'Portland', 'Raleigh',
+                        'Riverside', 'San Antonio', 'San Diego', 'Santa Ana', 'Savannah',
+                        'Seattle', 'Sedona', 'St. Petersburg', 'Tallahassee', 'Tampa',
+                        'Tulsa', 'Virginia Beach', 'Washington', 'Wichita'
+                    ]
+
+            };
+
+            countrySelect.addEventListener('change', function() {
+
+                const selectedCountry = countrySelect.value;
+                citySelect.innerHTML = '<option value="" selected disabled>Select City</option>';
+
+                // convert all the cities into options (for the select dropdown)
+                if (cities[selectedCountry]) {
+                    cities[selectedCountry].forEach(function(city) { //foreach ka loop thru the array
+                        const option = document.createElement('option');
+                        option.value = city;
+                        option.textContent = city;
+                        citySelect.appendChild(option) // city select dropdown htl option add
+
+                        });
+                }
+            });
+
+
+        });
+    </script>
+
+
+{% endblock %}

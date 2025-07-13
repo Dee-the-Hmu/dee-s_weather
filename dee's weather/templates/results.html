@@ -1,0 +1,223 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+        <!-- Current tab start-->
+        <div class="tab-content mt-4"> <!-- implement CSS -->
+                <div class="tab-pane fade show active" id="current" role="tabpanel">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-6"> <!-- take 6 out of 12 columns (50%) of the screen-->
+                                <div class="weather-card-main">
+
+                                    <h3>{{ forecasts.city }}, {{ forecasts.country }}</h3>
+                                    <p>{{ forecasts.fc[0].weather[0].description}}</p>
+                                    <h1>{{ forecasts.fc[0].main.temp|round(0)|int }}°C</h1>
+                                    <p class="feels-like mb-0">Feels like {{ forecasts.fc[0].main.feels_like|round }}°C</p>
+
+                                </div>
+                            </div>
+
+                            <!-- weather details card-->
+                            <div class="col-lg-6"> <!-- take 6 out of 12 columns (50%) of the screen-->
+                                <div class="weather-details-card">
+                                    <h3>Weather Details</h3>
+
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <div class="weather-detail-item">
+
+                                                        <p class="weather-detail-title">Visibility</p>
+                                                        <p class="weather-detail-value">{{forecasts.fc[0].visibility / 1000}}km</p>
+                                            </div>
+                                        </div>
+
+                                       <div class="col-6 mb-3">
+                                             <div class="weather-detail-item">
+
+                                                        <p class="weather-detail-title">Humidity</p>
+                                                        <p class="weather-detail-value">{{forecasts.fc[0].main.humidity }}%</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                             <div class="weather-detail-item">
+                                                        <p class="weather-detail-title">Wind Speed</p>
+                                                        <p class="weather-detail-value">{{ forecasts.fc[0].wind.speed }}</p>
+                                                </div>
+                                        </div>
+                                       <div class="col-6 mb-3">
+                                        <div class="weather-detail-item">
+                                            <p class="weather-detail-title">Pressure</p>
+                                            <p class="weather-detail-value"> {{forecasts.fc[0].main.pressure }}hPa</p>
+                                        </div>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-lg-3 col-6 mb-3">
+                                <div class="metric-card">
+                                    <div class="metric-value">☀️ {{ forecasts.sunrise }}</div> <!-- had to swap it since API returning opposite values for sunrise and sunset-->
+                                     <div class="metric-label">Sunrise</div>
+
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 col-6 mb-3">
+                                <div class="metric-card">
+                                    <div class="metric-value">🌙 {{ forecasts.sunset }}</div>
+                                      <div class="metric-label">Sunset</div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 col-6 mb-3">
+                                <div class="metric-card">
+                                     <div class="metric-value">{{ max_temp|round(0)|int }}°C</div>
+                                     <div class="metric-label">Max Temperature</div>
+                                </div>
+                            </div>
+
+
+                        <div class="col-lg-3 col-6 mb-3">
+                                <div class="metric-card">
+                                         <div class="metric-value">{{ min_temp|round(0)|int }}°C</div>
+                                        <div class="metric-label">Min Temperature</div>
+                                </div>
+                        </div>
+                    </div>
+                 </div>
+             </div>
+
+    <!--Current tab ends-->
+
+
+    <!--5 Day forecast tab starts-->
+
+    <div class="tab-pane fade" id="5_day_forecast" role="tabpanel">
+        <div class="container-fluid">
+            <div class="row justify-content-center mb-4">
+                        {% for i in range(0, 40, 8) %} <!-- start from 0 stops at 40 increment 8 since api update forecasts once 3 hours, 1 day has 8 * 3hours-->
+                        <!-- 5day foucs has 5 * 8increments-->
+                         {% if i < forecasts.fc|length and loop.index <= 5 %}
+                          <div class="col-lg-2 col-md-4 col-6">
+                            <div class="metric-card">
+                                <h6 class="text-muted">
+                                    {% if i == 0 %}
+                                    Today
+                                    {% elif i == 8 %}
+                                    Tomorrow
+                                    {% else %}
+                                        {{ forecasts.fc[i].formatted_date.split(',')[0] }} <!--don't know split function before-->
+                                    {% endif %}
+                                </h6>
+                                <div class="mt-2">
+                                    <i class="bi bi-app"></i>
+                                    <div class="fw-bold">
+                                         {% if loop.index == 1 %}
+                                        {{ today_temps.max|int }}°C
+                                    {% elif loop.index == 2 %}
+                                        {{ tmr_temps.max|int }}°C
+                                    {% elif loop.index == 3 %}
+                                        {{ day3_temps.max|int }}°C
+                                    {% elif loop.index == 4 %}
+                                        {{ day4_temps.max|int }}°C
+                                    {% elif loop.index == 5 %}
+                                        {{ day5_temps.max|int }}°C
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                       <div class="text-muted small">
+                                         {% if loop.index == 1 %}
+                                        {{ today_temps.min|int }}°C
+                                    {% elif loop.index == 2 %}
+                                        {{ tmr_temps.min|int }}°C
+                                    {% elif loop.index == 3 %}
+                                        {{ day3_temps.min|int }}°C
+                                    {% elif loop.index == 4 %}
+                                        {{ day4_temps.min|int }}°C
+                                    {% elif loop.index == 5 %}
+                                        {{ day5_temps.min|int }}°C
+                                    {% endif %}
+                                    </div>
+
+                                </div>
+                                    <div class="text-muted small">{{ forecasts.fc[i].weather[0].description|title }}</div>
+                                </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+            </div> <!-- row-->
+
+            <h2 class="text-start" >Detailed Forecast</h2>
+            <table class="table table-striped table-responsive">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Condition</th>
+                        <th>High/Low</th>
+                        <th>Humidity</th>
+                        <th>Wind</th>
+                        <th>Precipitation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(0,40,8) %}
+                        {% if i < forecasts.fc|length and loop.index <= 5 %}
+                            <tr>
+                                <td class="fw-bold">
+                                    {% if i == 0 %}
+                                    Today
+                                    {% elif i == 8 %}
+                                    Tomorrow
+                                    {% else %}
+                                        {{ forecasts.fc[i].formatted_date.split(',')[0] }}
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted">{{ forecasts.fc[i].weather[0].description|title }}</td>
+                                <td>
+                                    {% if loop.index == 1 %}
+                                        {{ today_temps.max|int }}°C/{{ today_temps.min|int }}°C
+                                    {% elif loop.index == 2 %}
+                                        {{ tmr_temps.max|int }}°C/{{ tmr_temps.min|int }}°C
+                                    {% elif loop.index == 3 %}
+                                        {{ day3_temps.max|int }}°C/{{ day3_temps.min|int }}°C
+                                    {% elif loop.index == 4 %}
+                                        {{ day4_temps.max|int }}°C/{{ day4_temps.min|int }}°C
+                                    {% elif loop.index == 5 %}
+                                        {{ day5_temps.max|int }}°C/{{ day5_temps.min|int }}°C
+                                    {% endif %}
+                                </td>
+                                <td>{{ forecasts.fc[i].main.humidity }}</td>
+                                <td>{{ forecasts.fc[i].wind.speed }}</td>
+                                <td>{{ (forecasts.fc[i]['pop'] * 100)|int }}%</td>
+                        {% endif %}
+                    {% endfor %}
+
+
+
+
+                </tbody>
+            </table>
+
+
+        </div> <!-- container-fluid-->
+    </div> <!-- 5 day forecast end-->
+
+
+
+      </div> <!-- end of tab-content -->
+
+
+
+
+
+
+{% endblock %}
