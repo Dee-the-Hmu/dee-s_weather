@@ -3,6 +3,8 @@ import requests
 from datetime import datetime
 from flask import redirect, render_template, session
 from functools import wraps
+from timezonefinder import TimezoneFinder
+import pytz
 
 
 #openweathermap.org
@@ -65,30 +67,63 @@ def lookup_weather_forecast(lat, lon):
     """look up 5 day weather forecast from OpenWeatherMap API for city"""
     url = f"https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API_KEY}&units=metric"
 
+    #get current weather (that includes sunrise/sunset)
+    s_url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}&units=metric"
+
+
     try:
         response = requests.get(url) # Send HTTP get request to API
         response.raise_for_status() # Raise an error for HTTP error responses
         weather_data = response.json() # Parses JSON response into Python dict()
+
+        #to get sunrise and sunset
+        s_response = requests.get(s_url)
+        s_response.raise_for_status()
+        s_data = s_response.json()
+
+        #get timezone for the coordinates
+        tf = TimezoneFinder()
+        timezone_str = tf.timezone_at(lat=lat, lng=lon)
+
+         # Check if timezone was found
+        if timezone_str:
+            city_tz = pytz.timezone(timezone_str)
+        else:
+            # Fallback to UTC if timezone detection fails
+            city_tz = pytz.UTC
+            print(f"Could not determine timezone for {lat}, {lon}, using UTC")
+
+         # Convert sunrise/sunset to city's timezone
+        sunrise_utc = datetime.fromtimestamp(s_data["sys"]["sunrise"], tz=pytz.UTC)
+        sunset_utc = datetime.fromtimestamp(s_data["sys"]["sunset"], tz=pytz.UTC)
+
+        sunrise_local = sunrise_utc.astimezone(city_tz)
+        sunset_local = sunset_utc.astimezone(city_tz)
+
 
         # to make dt human readable time #used chatgpt
         second_forecasts = []
 
         for forecast in weather_data["list"]:
 
-            dt_datetime = datetime.fromtimestamp(forecast["dt"])
+            # Convert forecast time to city's timezone
+            dt_utc = datetime.fromtimestamp(forecast["dt"], tz=pytz.UTC)
+            dt_local = dt_utc.astimezone(city_tz)
 
             second_forecast = forecast.copy() # copy each original forecast
-            second_forecast["formatted_time"] = dt_datetime.strftime("%I:%M %p")  # 12-hour format
-            second_forecast["formatted_date"] = dt_datetime.strftime("%A, %B %d")  # Day, Month Date
-            second_forecast["formatted_datetime"] = dt_datetime.strftime("%A, %B %d at %I:%M %p")  # Full format
+            second_forecast["formatted_time"] = dt_local.strftime("%I:%M %p")  # 12-hour format
+            second_forecast["formatted_date"] = dt_local.strftime("%A, %B %d")  # Day, Month Date
+            second_forecast["formatted_datetime"] = dt_local.strftime("%A, %B %d at %I:%M %p")  # Full format
             second_forecasts.append(second_forecast)
+
 
         return {
                 "city" : weather_data["city"]["name"],
                 "country" : weather_data["city"]["country"],
-                "sunrise" : datetime.fromtimestamp(weather_data["city"]["sunrise"]).strftime("%I:%M %p"), #Unix timestamps -> need to convert to readable time using datetime
-                "sunset" : datetime.fromtimestamp(weather_data["city"]["sunset"]).strftime("%I:%M %p"),
-                "fc" : second_forecasts
+                "sunrise" : sunrise_local.strftime("%I:%M %p"),
+                "sunset" : sunset_local.strftime("%I:%M %p"),
+                "fc" : second_forecasts,
+                "current": s_data
             }
 
     except requests.RequestException as e:
