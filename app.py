@@ -16,7 +16,7 @@ app = Flask(__name__)
 #configue session (may not need/use this)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-session(app)
+Session(app)
 
 
 
