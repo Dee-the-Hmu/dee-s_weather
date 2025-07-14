@@ -1,0 +1,101 @@
+.nav-link.active {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    color: white !important;
+}
+
+button{
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    color: white;
+}
+
+.weather-card-main {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    color: white;
+    border-radius: 20px;
+    padding: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    text-align: left;
+
+}
+
+.weather-card-main p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    text-transform: capitalize;
+    margin-bottom: 1rem;
+}
+.weather-card-main h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+.weather-card-main .feels-like {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.weather-details-card {
+    background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+    color: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    height: 100%;
+}
+
+.weather-details-card h5 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.weather-detail-item {
+    background:  rgba(255,255,255,0.1); /* semi-transparent white */
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.weather-detail-item:hover {
+    transform: translateY(-2px);
+    box-shadow: rgba(255, 255, 255, 0.2);
+}
+
+.weather-detail-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: white !important;
+}
+
+.weather-detail-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white !important
+}
+
+.metric-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease; /* make changes smooth instead of instant */
+    height: 100%;
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.metric-value {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #2d3436;
+    margin-bottom: 0.5rem;
+}
